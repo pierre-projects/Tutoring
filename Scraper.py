@@ -5,12 +5,13 @@ Goal:
 Build a scraper that collects useful data from a webpage.
 
 This file is incomplete on purpose.
-You will fill in each section as you learn the concepts.
+The comments show examples, but the student still needs to inspect the site
+and fill in the real tags/classes.
 
 General scraper steps:
 1. Choose a website
 2. Inspect the HTML
-3. Find the repeating item/card/container
+3. Find the repeated item/card/container
 4. Extract useful data from each item
 5. Clean the data
 6. Filter or sort the data
@@ -21,24 +22,61 @@ General scraper steps:
 # Imports
 # -----------------------------
 
-# TODO: import requests
-# TODO: import BeautifulSoup from bs4
-# TODO: import csv
-# TODO: import urljoin from urllib.parse if the site has links
+# requests lets Python load a webpage.
+# It works like a browser asking a website for HTML.
+# Example:
+# response = requests.get("https://example.com")
+import requests
+
+# BeautifulSoup helps us search through HTML.
+# It lets us find tags, classes, links, text, and repeated cards.
+# Example:
+# soup = BeautifulSoup(response.text, "html.parser")
+from bs4 import BeautifulSoup
+
+# csv lets us save scraped data into a spreadsheet-style file.
+# CSV files can open in Excel or Google Sheets.
+# Example:
+# writer = csv.DictWriter(file, fieldnames=["title", "price", "link"])
+import csv
+
+# urljoin helps us turn relative links into full links.
+# Example:
+# "product.html" becomes "https://example.com/product.html"
+from urllib.parse import urljoin
+
+# time lets us pause between requests.
+# This is useful when scraping multiple pages.
+# Example:
+# time.sleep(1)
+import time
 
 
 # -----------------------------
 # Settings / Constants
 # -----------------------------
 
-# TODO: Replace this with the website you want to scrape
+# TODO: Replace this with the website you want to scrape.
+# Example:
+# URL = "https://example.com/products"
 URL = "PASTE_WEBSITE_URL_HERE"
 
-# TODO: Use this if the website has relative links
+# TODO: Use this if the website has relative links.
+# Example:
+# BASE_URL = "https://example.com"
 BASE_URL = "PASTE_BASE_WEBSITE_URL_HERE"
 
-# TODO: Name the file where results will be saved
+# TODO: Name the file where results will be saved.
+# Example:
+# OUTPUT_FILE = "products.csv"
 OUTPUT_FILE = "scraped_results.csv"
+
+# TODO: Optional filter value.
+# Example:
+# MAX_PRICE = 30.00
+# KEYWORD = "python"
+# MIN_RATING = 4
+FILTER_VALUE = "CHANGE_THIS"
 
 
 # -----------------------------
@@ -51,18 +89,29 @@ def get_page_html(url):
     A scraper first needs to request the webpage.
 
     This function should:
-    - send a request to the URL
+    - send a GET request
     - check if the page loaded correctly
     - return the HTML text
     """
 
-    # TODO: send a GET request using requests.get()
+    # TODO: Send a request to the website.
+    # Example:
+    # response = requests.get(url)
 
-    # TODO: check the status code
+    # TODO: Add a User-Agent if needed.
+    # Example:
+    # headers = {"User-Agent": "Mozilla/5.0"}
+    # response = requests.get(url, headers=headers)
 
-    # TODO: return the HTML if the status code is 200
+    # TODO: Check if the page loaded.
+    # Example:
+    # if response.status_code == 200:
+    #     return response.text
 
-    # TODO: return None if the page failed
+    # TODO: Print an error if the page failed.
+    # Example:
+    # print("Page failed:", response.status_code)
+    # return None
 
     pass
 
@@ -90,14 +139,25 @@ def find_items(html):
     - return the list of item containers
     """
 
-    # TODO: create a BeautifulSoup object
-
-    # TODO: inspect the website and find the repeated container
-
+    # TODO: Create a BeautifulSoup object.
     # Example:
+    # soup = BeautifulSoup(html, "html.parser")
+
+    # TODO: Inspect the page and find the repeated container.
+    # Example HTML:
+    # <div class="item-card">...</div>
+    #
+    # Example code:
     # items = soup.find_all("div", class_="item-card")
 
-    # TODO: return the list of items
+    # Other possible examples:
+    # items = soup.find_all("article")
+    # items = soup.find_all("li", class_="result")
+    # items = soup.select(".item-card")
+
+    # TODO: Return the list of repeated items.
+    # Example:
+    # return items
 
     pass
 
@@ -116,15 +176,28 @@ def clean_text(text):
     - new lines
     - tabs
     - labels you do not need
-
-    This function should clean text before saving it.
     """
 
-    # TODO: remove extra spaces
+    # TODO: Check if the text is missing.
+    # Example:
+    # if text is None:
+    #     return ""
 
-    # TODO: remove new lines
+    # TODO: Remove extra spaces and new lines.
+    # Example:
+    # cleaned = text.strip()
 
-    # TODO: return the cleaned text
+    # TODO: Replace line breaks with spaces.
+    # Example:
+    # cleaned = cleaned.replace("\n", " ")
+
+    # TODO: Remove repeated spaces.
+    # Example:
+    # cleaned = " ".join(cleaned.split())
+
+    # TODO: Return the cleaned text.
+    # Example:
+    # return cleaned
 
     pass
 
@@ -142,15 +215,25 @@ def clean_number(number_text):
     "$19.99" should become 19.99
     "1,200 views" should become 1200
     "Rating: 4.5" should become 4.5
-
-    This function should convert scraped number text into a usable number.
     """
 
-    # TODO: remove symbols like $, commas, or labels
+    # TODO: Clean the text first.
+    # Example:
+    # number_text = clean_text(number_text)
 
-    # TODO: convert the result to int or float
+    # TODO: Remove symbols or labels.
+    # Example:
+    # number_text = number_text.replace("$", "")
+    # number_text = number_text.replace(",", "")
+    # number_text = number_text.replace("views", "")
+    # number_text = number_text.replace("Rating:", "")
 
-    # TODO: return the number
+    # TODO: Convert the text to a number.
+    # Example for decimals:
+    # return float(number_text)
+
+    # Example for whole numbers:
+    # return int(number_text)
 
     pass
 
@@ -175,21 +258,37 @@ def parse_item(item):
     You should inspect the HTML first, then decide what data to collect.
     """
 
-    # TODO: extract the title/name
+    # TODO: Extract a title or name.
+    # Example HTML:
+    # <h2 class="title">Cool Item</h2>
+    #
+    # Example code:
+    # title_tag = item.find("h2", class_="title")
+    # title = clean_text(title_tag.text)
 
-    # TODO: extract a price/date/rating/category/etc.
+    # TODO: Extract a detail like price, date, rating, location, or category.
+    # Example HTML:
+    # <p class="price">$19.99</p>
+    #
+    # Example code:
+    # price_tag = item.find("p", class_="price")
+    # price = clean_number(price_tag.text)
 
-    # TODO: extract a link if the item has one
+    # TODO: Extract a link.
+    # Example HTML:
+    # <a href="/details/item-1">View</a>
+    #
+    # Example code:
+    # link_tag = item.find("a")
+    # relative_link = link_tag["href"]
+    # full_link = urljoin(BASE_URL, relative_link)
 
-    # TODO: clean the extracted data
-
-    # TODO: return the data as a dictionary
-
-    # Example return:
+    # TODO: Return the data as a dictionary.
+    # Example:
     # return {
     #     "title": title,
-    #     "detail": detail,
-    #     "link": link
+    #     "price": price,
+    #     "link": full_link
     # }
 
     pass
@@ -213,12 +312,19 @@ def parse_all_items(items):
 
     results = []
 
-    # TODO: loop through each item
+    # TODO: Loop through each item.
+    # Example:
+    # for item in items:
 
-    # TODO: call parse_item(item)
+        # TODO: Parse one item.
+        # Example:
+        # parsed_item = parse_item(item)
 
-    # TODO: append the parsed data to results
+        # TODO: Add the parsed item to the results list.
+        # Example:
+        # results.append(parsed_item)
 
+    # TODO: Return all scraped results.
     return results
 
 
@@ -241,11 +347,22 @@ def filter_results(results):
 
     filtered = []
 
-    # TODO: loop through results
+    # TODO: Loop through each result.
+    # Example:
+    # for result in results:
 
-    # TODO: check if each result matches your rule
+        # TODO: Write a rule.
+        # Example for price:
+        # if result["price"] <= 30:
+        #     filtered.append(result)
 
-    # TODO: append matching results to filtered
+        # Example for keyword:
+        # if "python" in result["title"].lower():
+        #     filtered.append(result)
+
+        # Example for rating:
+        # if result["rating"] >= 4:
+        #     filtered.append(result)
 
     return filtered
 
@@ -266,11 +383,18 @@ def sort_results(results):
     - alphabetical order
     """
 
-    # TODO: choose what field to sort by
+    # TODO: Choose what field to sort by.
 
-    # Example:
+    # Example: sort by price from lowest to highest.
     # return sorted(results, key=lambda item: item["price"])
 
+    # Example: sort by rating from highest to lowest.
+    # return sorted(results, key=lambda item: item["rating"], reverse=True)
+
+    # Example: sort alphabetically by title.
+    # return sorted(results, key=lambda item: item["title"])
+
+    # If you do not want to sort yet, return the original list.
     return results
 
 
@@ -289,19 +413,31 @@ def save_to_csv(results, filename):
     - Numbers
     """
 
-    if len(results) == 0:
-        print("No results to save.")
-        return
+    # TODO: Stop if there are no results.
+    # Example:
+    # if len(results) == 0:
+    #     print("No results to save.")
+    #     return
 
-    # TODO: get the fieldnames from the dictionary keys
+    # TODO: Get the column names from the dictionary keys.
+    # Example:
+    # fieldnames = results[0].keys()
 
-    # TODO: open the CSV file
+    # TODO: Open the file.
+    # Example:
+    # with open(filename, "w", newline="", encoding="utf-8") as file:
 
-    # TODO: create a DictWriter
+        # TODO: Create the CSV writer.
+        # Example:
+        # writer = csv.DictWriter(file, fieldnames=fieldnames)
 
-    # TODO: write the header
+        # TODO: Write the header row.
+        # Example:
+        # writer.writeheader()
 
-    # TODO: write all rows
+        # TODO: Write all result rows.
+        # Example:
+        # writer.writerows(results)
 
     pass
 
@@ -318,11 +454,60 @@ def print_results(results):
     This helps you quickly check if the scraper worked.
     """
 
-    # TODO: loop through results
+    # TODO: Loop through the results.
+    # Example:
+    # for result in results:
 
-    # TODO: print each result clearly
+        # TODO: Print each result clearly.
+        # Example:
+        # print("-" * 40)
+        # print("Title:", result["title"])
+        # print("Price:", result["price"])
+        # print("Link:", result["link"])
 
     pass
+
+
+# -----------------------------
+# Optional Step 11: Scrape multiple pages
+# -----------------------------
+
+def scrape_multiple_pages():
+    """
+    Concept:
+    Some websites have more than one page of results.
+
+    Only do this after one page works.
+    """
+
+    all_results = []
+
+    # TODO: Loop through page numbers.
+    # Example:
+    # for page_number in range(1, 4):
+
+        # TODO: Build a page URL.
+        # Example:
+        # page_url = f"https://example.com/page/{page_number}"
+
+        # TODO: Load that page.
+        # Example:
+        # html = get_page_html(page_url)
+
+        # TODO: Find and parse the items.
+        # Example:
+        # items = find_items(html)
+        # results = parse_all_items(items)
+
+        # TODO: Add results to the full list.
+        # Example:
+        # all_results.extend(results)
+
+        # TODO: Pause between requests.
+        # Example:
+        # time.sleep(1)
+
+    return all_results
 
 
 # -----------------------------
@@ -342,24 +527,48 @@ def main():
     7. Save the results
     """
 
-    # TODO: get the HTML
+    # TODO: Load the webpage.
+    # Example:
+    # html = get_page_html(URL)
 
-    # TODO: stop if the HTML did not load
+    # TODO: Stop if the page failed.
+    # Example:
+    # if html is None:
+    #     print("Could not load page.")
+    #     return
 
-    # TODO: find repeated items
+    # TODO: Find the repeated item containers.
+    # Example:
+    # items = find_items(html)
 
-    # TODO: parse all items
+    # TODO: Parse all items.
+    # Example:
+    # results = parse_all_items(items)
 
-    # TODO: filter results
+    # TODO: Print how many items were scraped.
+    # Example:
+    # print("Items scraped:", len(results))
 
-    # TODO: sort results
+    # TODO: Filter results.
+    # Example:
+    # filtered_results = filter_results(results)
 
-    # TODO: print results
+    # TODO: Sort results.
+    # Example:
+    # sorted_results = sort_results(filtered_results)
 
-    # TODO: save results to CSV
+    # TODO: Print results.
+    # Example:
+    # print_results(sorted_results)
+
+    # TODO: Save results.
+    # Example:
+    # save_to_csv(sorted_results, OUTPUT_FILE)
 
     pass
 
 
+# This runs the program only when this file is executed directly.
+# It will not run automatically if this file is imported into another file.
 if __name__ == "__main__":
     main()
